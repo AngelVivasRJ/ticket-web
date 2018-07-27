@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="suite-tickets">
+<suite name="suite-tickets2">
 	<listeners>
 		<listener class-name="org.uncommons.reportng.HTMLReporter" />
 		<listener
 			class-name="org.uncommons.reportng.JUnitXMLReporter" />
 	</listeners>
-	<test name="Belavia Tickets">
-		<classes>
-			<class name="by.htp.test.TicketTest" />
-		</classes>
+	<test name="Other tests">
+		<groups>
+			<run>
+				<include name="now" />
+				<exclude name="On" />
+				<exclude name="Off" />
+			</run>
+		</groups>
+		<packages>
+			<package name="by.htp.test.*"></package>
+		</packages>
 	</test>
 </suite>

@@ -45,34 +45,41 @@ public class SelectionTicketsPage extends AbstractPage {
 
 	public int numberClickMonth(String month) {
 		switch (month) {
-		case "Ago":
-			return 0;
-		case "Sep":
+		case "Aug":
 			return 1;
-		case "Oct":
+		case "Sep":
 			return 2;
+		case "Oct":
+			return 3;
 		case "Nov":
-			return 3;	
+			return 4;
+		case "Dec":
+			return 5;
 		default:
 			return 0;
 		}
 	}
 
-	public void setDateDeparture(Calendar dayFly) {
-		String month = dayFly.getTime().toString().substring(4,7);
-		int day = Integer.parseInt(dayFly.getTime().toString().substring(8,10));
-		dayFly.toString();//
-		dayFly.getTime();
+	public void setDateDeparture(Date dayFly) {
+		String month = dayFly.toString().substring(4,7);
+		int day = Integer.parseInt(dayFly.toString().substring(8,10));
+		this.actions = new Actions(webDriverPage);
+		actions.pause(1000).perform();
+		initSelTask1();
+		actions.pause(2000).perform();
 		this.waitSmth = new WebDriverWait(webDriverPage, 10);
 		this.element = waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-calendar']")));
 		element.click();
+		
 		int i = numberClickMonth(month);
 		while (i > 0) {
+			actions.pause(2000).perform();
 			this.element = waitSmth
 					.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-right-open']")));
 			element.click();
 			i--;
 		}
+		
 		this.element = webDriverPage.findElement(By.linkText(Integer.toString(day)));
 		element.click();
 		this.element = waitSmth

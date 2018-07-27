@@ -16,7 +16,7 @@ public class BaseTest {
 	public void initDriver() {
 		driverSingletone = DriverSingletone.getDriver();
 		step = new Step(driverSingletone);
-		step.openSelection();
+		step.openSelectionPage();
 		step.initSelTask1();
 		System.out.println("@BeforeSuite()");
 	}

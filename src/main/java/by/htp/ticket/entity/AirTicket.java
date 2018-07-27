@@ -6,8 +6,8 @@ import java.util.Comparator;
 public class AirTicket implements Comparable<AirTicket> {
 	// Encapsulation verification
 	public static final String wayFlyReference[] = { "Minsk(MSQ)-Ryga(RIX)", "Ryga(RIX)-Minsk (MSQ)" };
-	public static final String classFlyReference[] = { "Economy promotion", "Economy restricted",
-			"Economic semi-flexible", "Economy flexible", "Business" };
+	public static final String classFlyReference[] = { "Economy Promotion", "Economy Restricted",
+			"Economic Semi-flexible", "Economy Flexible", "Business" };
 
 	private Calendar dateTimeFly;
 	private float costFly;
@@ -96,9 +96,9 @@ public class AirTicket implements Comparable<AirTicket> {
 
 			@Override
 			public int compare(AirTicket arg0, AirTicket arg1) {
-				if (arg0.dateTimeFly.after(arg1)) {
+				if (arg0.dateTimeFly.after(arg1.dateTimeFly)) {
 					return 1;
-				} else if (arg0.dateTimeFly.before(arg1)) {
+				} else if (arg0.dateTimeFly.before(arg1.dateTimeFly)) {
 					return -1;
 				} else {
 					return 0;
