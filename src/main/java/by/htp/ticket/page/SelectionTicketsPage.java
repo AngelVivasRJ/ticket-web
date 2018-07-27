@@ -78,8 +78,7 @@ public class SelectionTicketsPage extends AbstractPage {
 					.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-right-open']")));
 			element.click();
 			i--;
-		}
-		
+		}		
 		this.element = webDriverPage.findElement(By.linkText(Integer.toString(day)));
 		element.click();
 		this.element = waitSmth

@@ -27,6 +27,10 @@ public class ListAirTicketTwoWay {
 
 	@Override
 	public String toString() {
-		return "ListAirTicketTwoWay [listAirTicketTwoWay=" + listAirTicketTwoWay + "]";
+		return "ListAirTicketTwoWay [listAirTicketTwoWay=" + listAirTicketTwoWay + "]"; // must be change
+		
+		// must add methods to sort by date and allCost.
 	}	
+	
+	
 }
