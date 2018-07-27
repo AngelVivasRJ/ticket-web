@@ -88,7 +88,13 @@ public class AirTicket implements Comparable<AirTicket> {
 				} else if (fDif < 0) {
 					return -1;
 				} else {
-					return 0;
+					if (arg0.dateTimeFly.after(arg1.dateTimeFly)) {
+						return 1;
+					} else if (arg0.dateTimeFly.before(arg1.dateTimeFly)) {
+						return -1;
+					} else {
+						return 0;
+					}
 				}
 			}
 		};
@@ -101,7 +107,14 @@ public class AirTicket implements Comparable<AirTicket> {
 				} else if (arg0.dateTimeFly.before(arg1.dateTimeFly)) {
 					return -1;
 				} else {
+					float fDif = arg0.costFly - arg1.costFly;
+					if (fDif > 0) {
+						return 1;
+					} else if (fDif < 0) {
+						return -1;
+					} else {
 					return 0;
+					}
 				}
 			}
 		};

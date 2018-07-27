@@ -1,6 +1,7 @@
 package by.htp.ticket.entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ListAirTicketTwoWay {
@@ -27,10 +28,22 @@ public class ListAirTicketTwoWay {
 
 	@Override
 	public String toString() {
-		return "ListAirTicketTwoWay [listAirTicketTwoWay=" + listAirTicketTwoWay + "]"; // must be change
-		
-		// must add methods to sort by date and allCost.
+		return "ListAirTicketTwoWay [listAirTicketTwoWay=" + listAirTicketTwoWay + "]";
+	}
+
+	public void showListTicketTwoWay() {
+		System.out.println("----------------------");
+		for (AirTicketTwoWay airTicketTwoWay : listAirTicketTwoWay) {
+			System.out.println(airTicketTwoWay.toString());
+		}
+		System.out.println("----------------------");
+	}
+	
+	public void sortByCostFly() {
+		Collections.sort(this.listAirTicketTwoWay, AirTicketTwoWay.Comparators.COSTTW);
+	}
+	
+	public void sortByDateFly() {
+		Collections.sort(this.listAirTicketTwoWay, AirTicketTwoWay.Comparators.DATETW);
 	}	
-	
-	
 }

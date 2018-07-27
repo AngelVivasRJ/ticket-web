@@ -1,8 +1,9 @@
 package by.htp.ticket.entity;
 
+import java.util.Calendar;
 import java.util.Comparator;
 
-public class AirTicketTwoWay {
+public class AirTicketTwoWay implements Comparable<AirTicketTwoWay>{
 
 	private AirTicket airTicketForward;
 	private AirTicket airTicketBack;
@@ -45,12 +46,23 @@ public class AirTicketTwoWay {
 
 	@Override
 	public String toString() {
-		return airTicketForward.toString() + airTicketBack.toString() + "Cost: " + Float.toString(allCostTicket) + "EUR";
+		return airTicketForward.toString() + System.lineSeparator() + airTicketBack.toString() + System.lineSeparator() + "Cost: " + Float.toString(allCostTicket) + "EUR";
+	}
+
+	public int compareTo(AirTicketTwoWay o1, AirTicketTwoWay o2) {
+		
+		return 0;
+	}
+
+	@Override
+	public int compareTo(AirTicketTwoWay airTicketTwoWay) {
+		
+		return Comparators.COSTTW.compare(this, airTicketTwoWay);
 	}	
 	
 	public static class Comparators {
 
-		public static Comparator<AirTicketTwoWay> COST = new Comparator<AirTicketTwoWay>() {
+		public static Comparator<AirTicketTwoWay> COSTTW = new Comparator<AirTicketTwoWay>() {
 
 			@Override
 			public int compare(AirTicketTwoWay arg0, AirTicketTwoWay arg1) {
@@ -64,13 +76,13 @@ public class AirTicketTwoWay {
 				}
 			}
 		};
-		public static Comparator<AirTicketTwoWay> DATE = new Comparator<AirTicketTwoWay>() {
+		public static Comparator<AirTicketTwoWay> DATETW = new Comparator<AirTicketTwoWay>() {
 
 			@Override
 			public int compare(AirTicketTwoWay arg0, AirTicketTwoWay arg1) {
 				if (arg0.airTicketForward.getDateTimeFly().after(arg1.airTicketBack.getDateTimeFly())) {
 					return 1;
-				} else if (arg0.airTicketForward.getDateTimeFly().before(arg1.airTicketForward.getDateTimeFly())) {
+				} else if (arg0.airTicketForward.getDateTimeFly().before(arg1.airTicketBack.getDateTimeFly())) {
 					return -1;
 				} else {
 					return 0;
