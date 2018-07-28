@@ -13,6 +13,7 @@ import org.openqa.selenium.interactions.Actions;
 import by.htp.ticket.entity.AirTicket;
 import by.htp.ticket.entity.AirTicketTwoWay;
 import by.htp.ticket.entity.ListAirTicket;
+import by.htp.ticket.entity.ListAirTicketTwoWay;
 
 public class ListTicketsPage extends AbstractPage {
 
@@ -77,6 +78,7 @@ public class ListTicketsPage extends AbstractPage {
 			System.out.println(Integer.toString(j) + ": Cost: " + textElement);
 			j++;
 		}*/		
+		webDriverPage.navigate().refresh();
 		return fTemp;
 	}
 
@@ -96,9 +98,13 @@ public class ListTicketsPage extends AbstractPage {
 
 				this.listStandarAirTicket.add(airTicketTemp); // Create newAirTicket
 			}
-			webDriverPage.navigate().refresh();
 		}
 		webDriverPage.navigate().back();
 		return listAirTicket;
+	}
+
+	public ListAirTicketTwoWay getListAirTicketsTwoWay(ListAirTicket listAirTicket, Date dateForward, Date dateBack) {
+		
+		return null;
 	}
 }

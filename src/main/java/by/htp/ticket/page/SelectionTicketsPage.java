@@ -2,6 +2,7 @@ package by.htp.ticket.page;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,8 +14,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class SelectionTicketsPage extends AbstractPage {
 
 	private static final String urlHomeBelavia = "https://belavia.by";
-	
-	private WebElement element;
+
+	private WebElement webElement;
 	private Actions actions;
 	private WebDriverWait waitSmth;
 
@@ -28,19 +29,27 @@ public class SelectionTicketsPage extends AbstractPage {
 	}
 
 	public void selectCity(String city, String locatorElement) {
-		this.actions = new Actions(webDriverPage);
-		this.element = webDriverPage.findElement(By.cssSelector(locatorElement));
-		element.sendKeys(city);
 		actions.pause(500).perform();
-		actions.moveToElement(element, 170, 50).click().perform();
+		this.actions = new Actions(webDriverPage);
+		this.webElement = webDriverPage.findElement(By.cssSelector(locatorElement));
+		webElement.sendKeys(city);
+		actions.pause(500).perform();
+		actions.moveToElement(webElement, 170, 50).click().perform();
 		actions.pause(500).perform();
 	}
 
 	public void initSelTask1() {
 		selectCity("MSQ", "input[id='OriginLocation_Combobox']");
 		selectCity("RIX", "input[id='DestinationLocation_Combobox']");
-		this.element = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Ow']"));
-		element.click();
+		this.webElement = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Ow']"));
+		webElement.click();
+	}
+
+	public void initSelTask2() {
+		selectCity("MSQ", "input[id='OriginLocation_Combobox']");
+		selectCity("RIX", "input[id='DestinationLocation_Combobox']");
+		this.webElement = webDriverPage.findElement(By.cssSelector("input[value='Rt']"));
+		webElement.click();
 	}
 
 	public int numberClickMonth(String month) {
@@ -60,29 +69,42 @@ public class SelectionTicketsPage extends AbstractPage {
 		}
 	}
 
-	public void setDateDeparture(Date dayFly) {
-		String month = dayFly.toString().substring(4,7);
-		int day = Integer.parseInt(dayFly.toString().substring(8,10));
+	public void setDateDepartureBack(Boolean flyWithBack, Date dateForward, Date dateBack) {
+		int k1 = 0;
+		String month[] = { dateForward.toString().substring(4, 7), dateBack.toString().substring(4, 7) };
+		int day[] = { Integer.parseInt(dateForward.toString().substring(8, 10)),
+				Integer.parseInt(dateBack.toString().substring(8, 10)) };
 		this.actions = new Actions(webDriverPage);
 		actions.pause(1000).perform();
-		initSelTask1();
-		actions.pause(2000).perform();
-		this.waitSmth = new WebDriverWait(webDriverPage, 10);
-		this.element = waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-calendar']")));
-		element.click();
-		
-		int i = numberClickMonth(month);
-		while (i > 0) {
+		if (flyWithBack) {
+			initSelTask2();
+			k1 = 1;
+		} else {
+			initSelTask1();
+		}
+		WebElement iconCalendar = webDriverPage.findElement(By.cssSelector("i[class='icon-calendar']"));
+		for (int n = 0; n <= k1; n++) {
 			actions.pause(2000).perform();
-			this.element = waitSmth
-					.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-right-open']")));
-			element.click();
-			i--;
-		}		
-		this.element = webDriverPage.findElement(By.linkText(Integer.toString(day)));
-		element.click();
-		this.element = waitSmth
-				.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[onclick*='kupitnajtibilet']")));
-		element.click();
+			if (n == 0) {
+				this.waitSmth = new WebDriverWait(webDriverPage, 10);
+				this.webElement = waitSmth.until(ExpectedConditions.elementToBeClickable(iconCalendar));
+				webElement.click();
+			} else {
+					//It's necesary calculate the month to click.
+			}
+			int i = numberClickMonth(month[n]);
+			while (i > 0) {
+				actions.pause(2000).perform();
+				WebElement iconMonth = webDriverPage.findElement(By.cssSelector("i[class='icon-right-open']"));
+				actions.moveToElement(iconMonth).click().perform();
+				i--;
+			}
+			this.webElement = webDriverPage.findElement(By.linkText(Integer.toString(day[n])));
+			webElement.click();
+		}
+		System.out.println("Before search!!!!!!");
+		actions.pause(1000).perform();
+		webDriverPage.findElement(By.cssSelector("button[onclick*='kupitnajtibilet']")).submit();
+		System.out.println("Aftersearch!!!!!!!!");
 	}
 }
