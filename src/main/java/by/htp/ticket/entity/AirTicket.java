@@ -14,8 +14,12 @@ public class AirTicket implements Comparable<AirTicket> {
 	private String classFly;
 	private String wayFly;
 
-	private AirTicket() {
-		super(); // It is not used.
+	public AirTicket() {
+		super();
+		this.dateTimeFly = Calendar.getInstance();
+		this.costFly = 0;
+		this.classFly = wayFlyReference[0];
+		this.wayFly = classFlyReference[0];
 	}
 
 	public AirTicket(Calendar dateTimeFly, float costFly, String classFly, String wayFly) {

@@ -28,7 +28,7 @@ public class SelectionTicketsPage extends AbstractPage {
 		webDriverPage.get(urlHomeBelavia);
 	}
 
-	public void selectCity(String city, String locatorElement) {
+	private void selectCity(String city, String locatorElement) {
 		this.actions = new Actions(webDriverPage);		
 		this.waitSmth = new WebDriverWait(webDriverPage, 10);
 		this.waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector(locatorElement)));		
@@ -38,21 +38,21 @@ public class SelectionTicketsPage extends AbstractPage {
 		actions.moveToElement(webElement, 170, 50).click().perform();
 	}
 
-	public void initSelOneWay() {
+	private void initSelOneWay() {
 		selectCity("MSQ", "input[id='OriginLocation_Combobox']");
 		this.webElement = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Ow']"));
 		webElement.click();
 		selectCity("RIX", "input[id='DestinationLocation_Combobox']");
 	}
 
-	public void initSelTwoWay() {
+	private void initSelTwoWay() {
 		selectCity("MSQ", "input[id='OriginLocation_Combobox']");
 		this.webElement = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Rt']"));
 		webElement.click();
 		selectCity("RIX", "input[id='DestinationLocation_Combobox']");
 	}
 
-	public int monthToInt(String month) {
+	private int monthToInt(String month) {
 		switch (month) {
 		case "Jan":
 			return 0;
@@ -83,7 +83,7 @@ public class SelectionTicketsPage extends AbstractPage {
 		}
 	}
 
-	public int numberClickMonth(boolean flyWithReturn, String monthToSet[]) {
+	private int numberClickMonth(boolean flyWithReturn, String monthToSet[]) {
 		Calendar cal = Calendar.getInstance();
 		int monthToday = monthToInt(cal.getTime().toString().substring(4, 7));
 		if (flyWithReturn) {

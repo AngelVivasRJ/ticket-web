@@ -11,6 +11,9 @@ public class AirTicketTwoWay implements Comparable<AirTicketTwoWay> {
 
 	private AirTicketTwoWay() {
 		super();
+		this.airTicketForward = new AirTicket();
+		this.airTicketBack = new AirTicket();
+		this.allCostTicket = 0;
 	}
 
 	public AirTicketTwoWay(AirTicket airTicketForward, AirTicket airTicketBack, float allCostTicket) {

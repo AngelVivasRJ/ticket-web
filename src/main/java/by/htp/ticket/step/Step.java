@@ -3,8 +3,8 @@ package by.htp.ticket.step;
 import java.util.Date;
 import org.openqa.selenium.WebDriver;
 
-import by.htp.ticket.entity.ListAirTicket;
-import by.htp.ticket.entity.ListAirTicketTwoWay;
+import by.htp.ticket.dao.DaoAirTicket;
+import by.htp.ticket.dao.implement.DaoAirTicketImplement;
 import by.htp.ticket.page.ListTicketsPage;
 import by.htp.ticket.page.SelectionTicketsPage;
 
@@ -13,8 +13,7 @@ public class Step {
 	private WebDriver webDriverStep;
 	private SelectionTicketsPage selectionTicketsPage;
 	private ListTicketsPage listTicketsPage;
-	private ListAirTicket listAirTicket;
-	private ListAirTicketTwoWay listAirTicketTwoWay;
+	private DaoAirTicket daoAirTicket;
 
 	@SuppressWarnings("unused")
 	private Step() {
@@ -23,6 +22,7 @@ public class Step {
 
 	public Step(WebDriver webDriver) {
 		this.webDriverStep = webDriver;
+		this.daoAirTicket = new DaoAirTicketImplement();
 	}
 
 	public void openSelectionPage() {
@@ -33,41 +33,36 @@ public class Step {
 
 	public void initSelTicket() {
 		openSelectionPage();
-		this.listAirTicket = new ListAirTicket();
-		this.listAirTicketTwoWay = new ListAirTicketTwoWay();
 	}
 
 	public void getTicketDate(boolean flyWithReturn, Date dateDeparture, Date dateReturn) {
-		if (flyWithReturn) {
-			selectionTicketsPage.setDateDepartureReturn(flyWithReturn, dateDeparture, dateReturn);
-			this.listAirTicketTwoWay.setListAirTicketTwoWay(listTicketsPage.getListAirTicketsTwoWay(flyWithReturn,
-					listAirTicketTwoWay.getListAirTicketTwoWay(), dateDeparture, dateReturn));
-		} else {
-			selectionTicketsPage.setDateDepartureReturn(flyWithReturn, dateDeparture, dateReturn);
-			this.listAirTicket.setListAirTicket(listTicketsPage.getListAirTicketsOneWay(flyWithReturn,
-					listAirTicket.getListAirTicket(), dateDeparture));
-		}
+		selectionTicketsPage.setDateDepartureReturn(flyWithReturn, dateDeparture, dateReturn);
+		this.daoAirTicket = listTicketsPage.getAirTicketList(flyWithReturn, daoAirTicket);
 	}
 
 	public void showListOneWay() {
 		System.out.println("Original list of Tickets one way");
-		listAirTicket.showListTicket();
+		daoAirTicket.getListAirTicket().showListTicket();
+
 		System.out.println("Sorted list of one way tickets by cost");
-		listAirTicket.sortByCostFly();
-		listAirTicket.showListTicket();
+		daoAirTicket.getListAirTicket().sortByCostFly();
+		daoAirTicket.getListAirTicket().showListTicket();
+
 		System.out.println("Sorted list of one way tickets by date");
-		listAirTicket.sortByDateFly();
-		listAirTicket.showListTicket();
+		daoAirTicket.getListAirTicket().sortByDateFly();
+		daoAirTicket.getListAirTicket().showListTicket();
 	}
 
 	public void showListTwoWay() {
 		System.out.println("Original list of two way tickets");
-		listAirTicketTwoWay.showListTicketTwoWay();
-		/*
-		 * System.out.println("Sorted list of two way tickets by date");
-		 * listAirTicket.sortByDateFly(); listAirTicket.showListTicket();
-		 * System.out.println("Sorted list of two way tickets by cost");
-		 * listAirTicket.sortByCostFly(); listAirTicket.showListTicket();
-		 */
+		daoAirTicket.getListAirTicketTwoWay().showListTicketTwoWay();
+
+		System.out.println("Sorted list of two way tickets by date");
+		daoAirTicket.getListAirTicketTwoWay().sortByDateFly();;
+		daoAirTicket.getListAirTicketTwoWay().showListTicketTwoWay();
+		
+		System.out.println("Sorted list of two way tickets by cost");
+		daoAirTicket.getListAirTicketTwoWay().sortByCostFly();
+		daoAirTicket.getListAirTicketTwoWay().showListTicketTwoWay();
 	}
 }
