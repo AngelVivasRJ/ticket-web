@@ -61,7 +61,7 @@ public class TicketTest extends BaseTest {
 		step.getTicketDate(false, dateDeparture, dateDeparture);
 	}
 
-	@Test(dataProvider = "TwoWayDates")
+	//@Test(dataProvider = "TwoWayDates")
 	public void belaviaTwoWayTest(Date dateDeparture, Date dateReturn) {
 		System.out.println("BelaviaTwoWayTest()");
 		step.getTicketDate(true,dateDeparture, dateReturn);

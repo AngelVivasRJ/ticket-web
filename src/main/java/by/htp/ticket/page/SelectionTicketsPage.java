@@ -112,13 +112,10 @@ public class SelectionTicketsPage extends AbstractPage {
 			} else {
 				i = numberClickMonth(flyWithReturn, month);
 			}
-			System.out.println(n + ": " + " monthly clicks: " + Integer.toString(i));
 			while (i > 0) {
-				this.webElement = webDriverPage.findElement(By.cssSelector("i[class='icon-right-open']"));
 				this.waitSmth = new WebDriverWait(webDriverPage, 10);
 				waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-right-open']")));
-				//waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-right-open']")));
-				//webDriverPage.findElement(By.cssSelector("i[class='icon-right-open']")).click();
+				webDriverPage.findElement(By.cssSelector("i[class='icon-right-open']")).click();
 				i--;
 			}
 			this.webElement = webDriverPage.findElement(By.linkText(Integer.toString(day[n])));

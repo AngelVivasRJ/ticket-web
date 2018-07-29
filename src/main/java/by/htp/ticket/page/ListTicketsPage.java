@@ -58,7 +58,7 @@ public class ListTicketsPage extends AbstractPage {
 		return calTemp;
 	}
 
-	public float getAirTicketCost(int i, String locatorTicket, String locatorAmount) {
+	/*public float getAirTicketCost(int i, String locatorTicket, String locatorAmount) {
 		String textElement = "";
 		float fTemp = -7.7f; // default value, if there is not ticket for any class
 		this.actions = new Actions(webDriverPage);
@@ -67,8 +67,43 @@ public class ListTicketsPage extends AbstractPage {
 		// this.webElement.getLocation().toString());
 		// click on ticket
 		actions.pause(1000);
-		actions.moveToElement(this.webElement, 525 + i * 120, 30).click().build().perform();
+		actions.moveToElement(this.webElement, 525 + i * 120, 30).click().perform();
 		actions.pause(1000).perform();
+		// get costFly
+		List<WebElement> listWebElement = webDriverPage.findElements(By.cssSelector(locatorAmount));
+		textElement = listWebElement.get(listWebElement.size() - 1).getText();
+		if (!(textElement.substring(0, 1).equals("-"))) {
+			textElement = textElement.replace(',', '.');
+			fTemp = Float.parseFloat(textElement);
+		}
+		
+		 * int j = 0; for (WebElement iWebElement : listWebElement) { textElement =
+		 * iWebElement.getText(); System.out.println(Integer.toString(j) + ": Cost: " +
+		 * textElement); j++; }
+		 
+		webDriverPage.navigate().refresh();
+		return fTemp;
+	}*/
+	
+	public float getAirTicketCost(int i, String locatorTicket, String locatorAmount) {
+		
+		String textElement = "";
+		float fTemp = -7.7f; // default value, if there is not ticket for any class
+		this.actions = new Actions(webDriverPage);
+		
+		this.webElement = webDriverPage.findElement(By.cssSelector(locatorTicket));
+		
+		
+		// System.out.println(Integer.toString(i) + ": " +
+		// this.webElement.getLocation().toString());
+		
+		
+		// click on ticket
+		actions.pause(1000);
+		actions.moveToElement(this.webElement, 525 + i * 120, 30).click().perform();
+		actions.pause(1000).perform();
+		
+		
 		// get costFly
 		List<WebElement> listWebElement = webDriverPage.findElements(By.cssSelector(locatorAmount));
 		textElement = listWebElement.get(listWebElement.size() - 1).getText();
@@ -100,7 +135,7 @@ public class ListTicketsPage extends AbstractPage {
 				System.out.println(airTicketTemp.toString()); // Show ticket
 				this.listStandarAirTicket.add(airTicketTemp); // Create newAirTicket
 			}
-		}
+		}		
 		webDriverPage.navigate().back();
 		return listStandarAirTicket;
 	}
