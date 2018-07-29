@@ -3,12 +3,12 @@ package by.htp.ticket.entity;
 import java.util.Calendar;
 import java.util.Comparator;
 
-public class AirTicketTwoWay implements Comparable<AirTicketTwoWay>{
+public class AirTicketTwoWay implements Comparable<AirTicketTwoWay> {
 
 	private AirTicket airTicketForward;
 	private AirTicket airTicketBack;
 	private float allCostTicket;
-	
+
 	private AirTicketTwoWay() {
 		super();
 	}
@@ -46,20 +46,21 @@ public class AirTicketTwoWay implements Comparable<AirTicketTwoWay>{
 
 	@Override
 	public String toString() {
-		return airTicketForward.toString() + System.lineSeparator() + airTicketBack.toString() + System.lineSeparator() + "Cost: " + Float.toString(allCostTicket) + "EUR";
+		return airTicketForward.toString() + System.lineSeparator() + airTicketBack.toString() + System.lineSeparator()
+				+ "Cost: " + Float.toString(allCostTicket) + "BYN";
 	}
 
 	public int compareTo(AirTicketTwoWay o1, AirTicketTwoWay o2) {
-		
+
 		return 0;
 	}
 
 	@Override
 	public int compareTo(AirTicketTwoWay airTicketTwoWay) {
-		
+
 		return Comparators.COSTTW.compare(this, airTicketTwoWay);
-	}	
-	
+	}
+
 	public static class Comparators {
 
 		public static Comparator<AirTicketTwoWay> COSTTW = new Comparator<AirTicketTwoWay>() {

@@ -29,81 +29,107 @@ public class SelectionTicketsPage extends AbstractPage {
 	}
 
 	public void selectCity(String city, String locatorElement) {
-		actions.pause(500).perform();
-		this.actions = new Actions(webDriverPage);
+		this.actions = new Actions(webDriverPage);		
+		this.waitSmth = new WebDriverWait(webDriverPage, 10);
+		//waitSmth.until(ExpectedConditions.elementToBeClickable(webElement));
+		
+		this.waitSmth.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(locatorElement)));
 		this.webElement = webDriverPage.findElement(By.cssSelector(locatorElement));
-		webElement.sendKeys(city);
+		webElement.sendKeys(city);		
 		actions.pause(500).perform();
 		actions.moveToElement(webElement, 170, 50).click().perform();
-		actions.pause(500).perform();
 	}
 
-	public void initSelTask1() {
+	public void initSelOneWay() {
 		selectCity("MSQ", "input[id='OriginLocation_Combobox']");
 		selectCity("RIX", "input[id='DestinationLocation_Combobox']");
-		this.webElement = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Ow']"));
-		webElement.click();
 	}
 
-	public void initSelTask2() {
+	public void initSelTwoWay() {
 		selectCity("MSQ", "input[id='OriginLocation_Combobox']");
 		selectCity("RIX", "input[id='DestinationLocation_Combobox']");
-		this.webElement = webDriverPage.findElement(By.cssSelector("input[value='Rt']"));
-		webElement.click();
 	}
 
-	public int numberClickMonth(String month) {
+	public int monthToInt(String month) {
 		switch (month) {
-		case "Aug":
+		case "Jan":
+			return 0;
+		case "Feb":
 			return 1;
-		case "Sep":
+		case "Mar":
 			return 2;
-		case "Oct":
+		case "Apr":
 			return 3;
-		case "Nov":
+		case "May":
 			return 4;
-		case "Dec":
+		case "Jun":
 			return 5;
+		case "Jul":
+			return 6;
+		case "Aug":
+			return 7;
+		case "Sep":
+			return 8;
+		case "Oct":
+			return 9;
+		case "Nov":
+			return 10;
+		case "Dec":
+			return 11;
 		default:
 			return 0;
 		}
 	}
 
-	public void setDateDepartureBack(Boolean flyWithBack, Date dateForward, Date dateBack) {
-		int k1 = 0;
-		String month[] = { dateForward.toString().substring(4, 7), dateBack.toString().substring(4, 7) };
-		int day[] = { Integer.parseInt(dateForward.toString().substring(8, 10)),
-				Integer.parseInt(dateBack.toString().substring(8, 10)) };
+	public int numberClickMonth(boolean flyWithReturn, String monthToSet[]) {
+		Calendar cal = Calendar.getInstance();
+		int monthToday = monthToInt(cal.getTime().toString().substring(4, 7));
+		if (flyWithReturn) {
+			return monthToInt(monthToSet[1]) - monthToInt(monthToSet[0]);
+		} else {
+			return monthToInt(monthToSet[0]) - monthToday;
+		}
+	}
+
+	public void setDateDepartureReturn(Boolean flyWithReturn, Date dateDeparture, Date dateReturn) {
+		int k1 = 0, i = 0;
+		String month[] = { dateDeparture.toString().substring(4, 7), dateReturn.toString().substring(4, 7) };
+		int day[] = { Integer.parseInt(dateDeparture.toString().substring(8, 10)),
+				Integer.parseInt(dateReturn.toString().substring(8, 10)) };
 		this.actions = new Actions(webDriverPage);
-		actions.pause(1000).perform();
-		if (flyWithBack) {
-			initSelTask2();
+		//actions.pause(1000).perform();
+		if (flyWithReturn) {
+			initSelTwoWay();
 			k1 = 1;
 		} else {
-			initSelTask1();
+			initSelOneWay();
 		}
-		WebElement iconCalendar = webDriverPage.findElement(By.cssSelector("i[class='icon-calendar']"));
 		for (int n = 0; n <= k1; n++) {
-			actions.pause(2000).perform();
+			actions.pause(500).perform();
 			if (n == 0) {
-				this.waitSmth = new WebDriverWait(webDriverPage, 10);
-				this.webElement = waitSmth.until(ExpectedConditions.elementToBeClickable(iconCalendar));
-				webElement.click();
+				i = numberClickMonth(false, month);
 			} else {
-					//It's necesary calculate the month to click.
+				i = numberClickMonth(flyWithReturn, month);
 			}
-			int i = numberClickMonth(month[n]);
-			while (i > 0) {
-				actions.pause(2000).perform();
-				WebElement iconMonth = webDriverPage.findElement(By.cssSelector("i[class='icon-right-open']"));
-				actions.moveToElement(iconMonth).click().perform();
+			System.out.println(n + ": " + " monthly clicks: " + Integer.toString(i));
+			while (i > 0) {						
+				this.webElement = webDriverPage.findElement(By.cssSelector("i[class='icon-right-open']"));
+				this.waitSmth = new WebDriverWait(webDriverPage, 10);
+				waitSmth.until(ExpectedConditions.elementToBeClickable(webElement));
+				webElement.click();
 				i--;
 			}
 			this.webElement = webDriverPage.findElement(By.linkText(Integer.toString(day[n])));
 			webElement.click();
+			if (!flyWithReturn) {
+				this.webElement = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Ow']"));
+				webElement.click();
+			}
 		}
 		System.out.println("Before search!!!!!!");
-		actions.pause(1000).perform();
+		actions.pause(500).perform(); // With high velocity this button don't work with this method.
+		this.waitSmth = new WebDriverWait(webDriverPage,10);
+		//waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[onclick*='kupitnajtibilet']")));
 		webDriverPage.findElement(By.cssSelector("button[onclick*='kupitnajtibilet']")).submit();
 		System.out.println("Aftersearch!!!!!!!!");
 	}

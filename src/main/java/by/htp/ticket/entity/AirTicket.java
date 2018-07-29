@@ -67,7 +67,7 @@ public class AirTicket implements Comparable<AirTicket> {
 
 	@Override
 	public String toString() {
-		return wayFly + " " + toStringCalendar(dateTimeFly) + " " + String.format("%.2f", costFly) + " EUR" + " "
+		return wayFly + " " + toStringCalendar(dateTimeFly) + " " + String.format("%.2f", costFly) + " BYN" + " "
 				+ classFly;
 	}
 

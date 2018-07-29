@@ -17,14 +17,14 @@ public class BaseTest {
 		driverSingletone = DriverSingletone.getDriver();
 		step = new Step(driverSingletone);
 		step.openSelectionPage();
-		step.initSelTask1();
+		step.initSelTicket();
 		System.out.println("@BeforeSuite()");
 	}
 	
 	@AfterSuite
 	public void closeDriver() throws InterruptedException {
-		System.out.println("@Aftersuite");
 		Thread.sleep(5000); 
 		DriverSingletone.closeWebDriver();
+		System.out.println("@Aftersuite");
 	}
 }
