@@ -21,7 +21,7 @@ public class TicketTest extends BaseTest {
 		finCalendar.set(2018, 7, 1, 0, 0);
 		while (finCalendar.before(calendarDeparture)) {
 			listDateDeparture.add(calendarDeparture.getTime());
-			calendarDeparture.add(Calendar.DATE, -55);
+			calendarDeparture.add(Calendar.DATE, -45);
 		}
 		for (Date date : listDateDeparture) {
 			System.out.println("DataProvider:" + date.toString());

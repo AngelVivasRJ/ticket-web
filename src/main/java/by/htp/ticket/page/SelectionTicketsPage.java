@@ -31,22 +31,24 @@ public class SelectionTicketsPage extends AbstractPage {
 	public void selectCity(String city, String locatorElement) {
 		this.actions = new Actions(webDriverPage);		
 		this.waitSmth = new WebDriverWait(webDriverPage, 10);
-		//waitSmth.until(ExpectedConditions.elementToBeClickable(webElement));
-		
-		this.waitSmth.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(locatorElement)));
+		this.waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector(locatorElement)));		
 		this.webElement = webDriverPage.findElement(By.cssSelector(locatorElement));
-		webElement.sendKeys(city);		
+		webElement.sendKeys(city);
 		actions.pause(500).perform();
 		actions.moveToElement(webElement, 170, 50).click().perform();
 	}
 
 	public void initSelOneWay() {
 		selectCity("MSQ", "input[id='OriginLocation_Combobox']");
+		this.webElement = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Ow']"));
+		webElement.click();
 		selectCity("RIX", "input[id='DestinationLocation_Combobox']");
 	}
 
 	public void initSelTwoWay() {
 		selectCity("MSQ", "input[id='OriginLocation_Combobox']");
+		this.webElement = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Rt']"));
+		webElement.click();
 		selectCity("RIX", "input[id='DestinationLocation_Combobox']");
 	}
 
@@ -97,7 +99,6 @@ public class SelectionTicketsPage extends AbstractPage {
 		int day[] = { Integer.parseInt(dateDeparture.toString().substring(8, 10)),
 				Integer.parseInt(dateReturn.toString().substring(8, 10)) };
 		this.actions = new Actions(webDriverPage);
-		//actions.pause(1000).perform();
 		if (flyWithReturn) {
 			initSelTwoWay();
 			k1 = 1;
@@ -112,24 +113,20 @@ public class SelectionTicketsPage extends AbstractPage {
 				i = numberClickMonth(flyWithReturn, month);
 			}
 			System.out.println(n + ": " + " monthly clicks: " + Integer.toString(i));
-			while (i > 0) {						
+			while (i > 0) {
 				this.webElement = webDriverPage.findElement(By.cssSelector("i[class='icon-right-open']"));
 				this.waitSmth = new WebDriverWait(webDriverPage, 10);
-				waitSmth.until(ExpectedConditions.elementToBeClickable(webElement));
-				webElement.click();
+				waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-right-open']")));
+				//waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("i[class='icon-right-open']")));
+				//webDriverPage.findElement(By.cssSelector("i[class='icon-right-open']")).click();
 				i--;
 			}
 			this.webElement = webDriverPage.findElement(By.linkText(Integer.toString(day[n])));
 			webElement.click();
-			if (!flyWithReturn) {
-				this.webElement = webDriverPage.findElement(By.cssSelector("label[for='JourneySpan_Ow']"));
-				webElement.click();
-			}
 		}
 		System.out.println("Before search!!!!!!");
-		actions.pause(500).perform(); // With high velocity this button don't work with this method.
-		this.waitSmth = new WebDriverWait(webDriverPage,10);
-		//waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[onclick*='kupitnajtibilet']")));
+		this.waitSmth = new WebDriverWait(webDriverPage, 10);
+		waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[onclick*='kupitnajtibilet']")));
 		webDriverPage.findElement(By.cssSelector("button[onclick*='kupitnajtibilet']")).submit();
 		System.out.println("Aftersearch!!!!!!!!");
 	}
