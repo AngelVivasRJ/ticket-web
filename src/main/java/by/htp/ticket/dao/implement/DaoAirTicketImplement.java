@@ -77,6 +77,36 @@ public class DaoAirTicketImplement implements DaoAirTicket {
 		this.listAirTicketTwoWay.getListAirTicketTwoWay().add(airTicketTwoWay);
 	}
 
-	
+	@Override
+	public void showListTicket() {
+		listAirTicket.showListTicket();
+		
+	}
+
+	@Override
+	public void showListTicketTwoWay() {
+		listAirTicketTwoWay.showListTicketTwoWay();
+		
+	}
+
+	@Override
+	public void sortByCostFly() {
+		this.listAirTicket.sortByCostFly();		
+	}
+
+	@Override
+	public void sortByCostFlyTwoWay() {
+		this.listAirTicketTwoWay.sortByCostFly();		
+	}
+
+	@Override
+	public void sortByDateFly() {
+		this.listAirTicket.sortByDateFly();		
+	}
+
+	@Override
+	public void sortByDateFlyTwoWay() {
+		this.listAirTicketTwoWay.sortByDateFly();	
+	}
 	
 }

@@ -28,5 +28,16 @@ public interface DaoAirTicket {
 	public void addOneWay(AirTicket airTicket);
 	
 	public void addTwoWay(AirTicketTwoWay airTicketTwoWay);
-
+	
+	public void showListTicket();
+	
+	public void showListTicketTwoWay();
+	
+	public void sortByCostFly();
+	
+	public void sortByCostFlyTwoWay();
+	
+	public void sortByDateFly();
+	
+	public void sortByDateFlyTwoWay();
 }

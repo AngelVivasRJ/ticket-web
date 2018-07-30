@@ -42,27 +42,27 @@ public class Step {
 
 	public void showListOneWay() {
 		System.out.println("Original list of Tickets one way");
-		daoAirTicket.getListAirTicket().showListTicket();
+		daoAirTicket.showListTicket();
 
 		System.out.println("Sorted list of one way tickets by cost");
-		daoAirTicket.getListAirTicket().sortByCostFly();
-		daoAirTicket.getListAirTicket().showListTicket();
+		daoAirTicket.sortByCostFly();
+		daoAirTicket.showListTicket();
 
 		System.out.println("Sorted list of one way tickets by date");
-		daoAirTicket.getListAirTicket().sortByDateFly();
-		daoAirTicket.getListAirTicket().showListTicket();
+		daoAirTicket.sortByDateFly();
+		daoAirTicket.showListTicket();
 	}
 
 	public void showListTwoWay() {
 		System.out.println("Original list of two way tickets");
-		daoAirTicket.getListAirTicketTwoWay().showListTicketTwoWay();
+		daoAirTicket.showListTicketTwoWay();
 
 		System.out.println("Sorted list of two way tickets by date");
-		daoAirTicket.getListAirTicketTwoWay().sortByDateFly();;
-		daoAirTicket.getListAirTicketTwoWay().showListTicketTwoWay();
+		daoAirTicket.sortByDateFly();;
+		daoAirTicket.showListTicketTwoWay();
 		
 		System.out.println("Sorted list of two way tickets by cost");
-		daoAirTicket.getListAirTicketTwoWay().sortByCostFly();
-		daoAirTicket.getListAirTicketTwoWay().showListTicketTwoWay();
+		daoAirTicket.sortByCostFly();
+		daoAirTicket.showListTicketTwoWay();
 	}
 }
