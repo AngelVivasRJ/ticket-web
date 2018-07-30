@@ -3,6 +3,7 @@ package by.htp.ticket.step;
 import java.util.Date;
 import org.openqa.selenium.WebDriver;
 
+import by.htp.ticket.console.Console;
 import by.htp.ticket.dao.DaoAirTicket;
 import by.htp.ticket.dao.implement.DaoAirTicketImplement;
 import by.htp.ticket.page.ListTicketsPage;
@@ -14,6 +15,7 @@ public class Step {
 	private SelectionTicketsPage selectionTicketsPage;
 	private ListTicketsPage listTicketsPage;
 	private DaoAirTicket daoAirTicket;
+	private Console console;
 
 	@SuppressWarnings("unused")
 	private Step() {
@@ -23,6 +25,7 @@ public class Step {
 	public Step(WebDriver webDriver) {
 		this.webDriverStep = webDriver;
 		this.daoAirTicket = new DaoAirTicketImplement();
+		this.console = new Console(daoAirTicket);
 	}
 
 	public void openSelectionPage() {
@@ -42,27 +45,28 @@ public class Step {
 
 	public void showListOneWay() {
 		System.out.println("Original list of Tickets one way");
-		daoAirTicket.showListTicket();
+		console.showListTicket();
 
 		System.out.println("Sorted list of one way tickets by cost");
 		daoAirTicket.sortByCostFly();
-		daoAirTicket.showListTicket();
+		console.showListTicket();
 
 		System.out.println("Sorted list of one way tickets by date");
 		daoAirTicket.sortByDateFly();
-		daoAirTicket.showListTicket();
+		console.showListTicket();
 	}
 
 	public void showListTwoWay() {
 		System.out.println("Original list of two way tickets");
-		daoAirTicket.showListTicketTwoWay();
+		console.showListTicketTwoWay();
+		
 
 		System.out.println("Sorted list of two way tickets by date");
 		daoAirTicket.sortByDateFly();;
-		daoAirTicket.showListTicketTwoWay();
+		console.showListTicketTwoWay();
 		
 		System.out.println("Sorted list of two way tickets by cost");
 		daoAirTicket.sortByCostFly();
-		daoAirTicket.showListTicketTwoWay();
+		console.showListTicketTwoWay();
 	}
 }
