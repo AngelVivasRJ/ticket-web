@@ -10,7 +10,7 @@ public class ListAirTicket {
 
 	public ListAirTicket() {
 		super();
-		this.listAirTicket = new ArrayList<AirTicket>(); 
+		this.listAirTicket = new ArrayList<AirTicket>();
 	}
 
 	public ListAirTicket(List<AirTicket> listAirTicket) {

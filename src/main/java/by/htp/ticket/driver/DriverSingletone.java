@@ -7,9 +7,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 public class DriverSingletone {
 
+
 	private static final String CHROME = "webdriver.chrome.driver";
 	private static final String CHROME_PATH = "d:\\d\\selenium\\driver\\chrome\\chromedriver.exe";
-
+	
 	private static WebDriver webDriver;
 
 	static {
