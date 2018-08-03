@@ -30,7 +30,7 @@ public class Step {
 
 	public void openSelectionPage() {
 		this.selectionTicketsPage = new SelectionTicketsPage(webDriverStep);
-		this.listTicketsPage = new ListTicketsPage(webDriverStep);
+		this.listTicketsPage = new ListTicketsPage(webDriverStep, daoAirTicket);
 		selectionTicketsPage.openPage();
 	}
 
@@ -40,7 +40,7 @@ public class Step {
 
 	public void getTicketDate(boolean flyWithReturn, Date dateDeparture, Date dateReturn) {
 		selectionTicketsPage.setDateDepartureReturn(flyWithReturn, dateDeparture, dateReturn);
-		this.daoAirTicket = listTicketsPage.getAirTicketList(flyWithReturn, daoAirTicket);
+		listTicketsPage.getAirTicketList(flyWithReturn);		
 	}
 
 	public void showListOneWay() {
@@ -62,11 +62,11 @@ public class Step {
 		
 
 		System.out.println("Sorted list by date");
-		daoAirTicket.sortByDateFly();;
+		daoAirTicket.sortByDateFlyTwoWay();
 		console.showListTicketTwoWay();
 		
 		System.out.println("Sorted list by cost");
-		daoAirTicket.sortByCostFly();
+		daoAirTicket.sortByCostFlyTwoWay();
 		console.showListTicketTwoWay();
 	}
 }

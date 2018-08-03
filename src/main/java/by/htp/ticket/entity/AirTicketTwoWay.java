@@ -49,15 +49,15 @@ public class AirTicketTwoWay implements Comparable<AirTicketTwoWay> {
 	public void setAllCostTicket(float allCostTicket) {
 		this.allCostTicket = allCostTicket;
 	}
-	
+
 	public AirTicketTwoWay(String currency) {
 		this.currency = currency;
 	}
 
 	@Override
 	public String toString() {
-		return airTicketForward.toString() + System.lineSeparator() + airTicketBack.toString() + System.lineSeparator()
-				+ "Cost: " + Float.toString(allCostTicket) + " " + currency;
+		return "Cost: " + Float.toString(allCostTicket) + " " + currency + System.lineSeparator()
+				+ airTicketForward.toString() + System.lineSeparator() + airTicketBack.toString();
 	}
 
 	public int compareTo(AirTicketTwoWay o1, AirTicketTwoWay o2) {

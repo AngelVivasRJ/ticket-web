@@ -33,8 +33,10 @@ public class ListAirTicketTwoWay {
 
 	public void showListTicketTwoWay() {
 		System.out.println("----------------------");
+		int i = 1;
 		for (AirTicketTwoWay airTicketTwoWay : listAirTicketTwoWay) {
-			System.out.println(airTicketTwoWay.toString());
+			System.out.println(i + ": " + airTicketTwoWay.toString());
+			i++;
 		}
 		System.out.println("----------------------");
 	}

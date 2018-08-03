@@ -23,9 +23,16 @@ public class ListTicketsPage extends AbstractPage {
 	private WebElement webElement;
 	private Actions actions;
 	private WebDriverWait waitSmth;
+	private DaoAirTicket daoAirTicket;
+	private JavascriptExecutor jsExecutor;
+	private Calendar dateTickDepart = Calendar.getInstance();
+	private Calendar dateTickReturn = Calendar.getInstance();
+	private String currency = "";
 
-	public ListTicketsPage(WebDriver webDriver) {
+	public ListTicketsPage(WebDriver webDriver, DaoAirTicket daoAirTicket) {
 		super(webDriver);
+		this.daoAirTicket = daoAirTicket;
+		this.jsExecutor = (JavascriptExecutor) webDriverPage;
 	}
 
 	@Override
@@ -44,7 +51,28 @@ public class ListTicketsPage extends AbstractPage {
 		return calTemp;
 	}
 
-	private float getCostTicket(String costWebElement) {
+	private String clickGetClass(String cssSelector, int i) {
+		return (String) jsExecutor.executeScript("var i = arguments[0];" + "var cssSelector = " + cssSelector + ";"
+				+ "var l = document.querySelectorAll(cssSelector)[i].id.length;"
+				+ "var str = document.querySelectorAll(cssSelector)[i].id.substr(l-2,l);"
+				+ "switch(str){ case 'EP': var out = 'Economy Promotion'; break;"
+				+ "case 'ER': var out = 'Economy Restricted'; break;"
+				+ "case 'SF': var out = 'Economic Semi-flexible'; break;"
+				+ "case 'EF': var out = 'Economy Flexible'; break;" + "case 'BC': var out = 'Business'; break; "
+				+ "default: var out = 'Business'; break;};" + "document.querySelectorAll(cssSelector)[i].click();"
+				+ "return out;", i);
+	}
+
+	private float getCostTicket(Boolean subString, String cssSelector, int i) {
+		String costWebElement = "";
+		if (!subString) {
+			costWebElement = (String) jsExecutor
+					.executeScript("return document.querySelectorAll(" + cssSelector + ")[0].textContent;");
+		} else {
+			costWebElement = (String) jsExecutor.executeScript("var x = document.querySelectorAll(" + cssSelector
+					+ ")[arguments[0]].textContent.length;" + "return document.querySelectorAll(" + cssSelector
+					+ ")[arguments[0]].textContent.substr(0,x-4);", i);
+		}
 		String strCost = "";
 		int indexBegin = 0;
 		String regExp = "[^\\w,]";
@@ -62,101 +90,66 @@ public class ListTicketsPage extends AbstractPage {
 		return Float.parseFloat(strCost.replace(',', '.'));
 	}
 
-	public String getInnerHTML(WebElement webElement) {
-		String jScript = "return arguments[0].innerHTML;";
-		return (String) ((JavascriptExecutor) webDriverPage).executeScript(jScript, webElement);
+	private void getDateCurrency(boolean flyWithReturn) {
+		List<WebElement> webDateDeparture = webDriverPage.findElements(By.cssSelector("div[class='departure'] strong"));
+		if (!flyWithReturn) {
+			this.dateTickDepart = getTimeAirTicket(
+					(String) jsExecutor.executeScript("return arguments[0].innerHTML;", webDateDeparture.get(1)));
+		} else {
+			this.dateTickDepart = getTimeAirTicket(
+					(String) jsExecutor.executeScript("return arguments[0].innerHTML;", webDateDeparture.get(1)));
+			this.dateTickReturn = getTimeAirTicket(
+					(String) jsExecutor.executeScript("return arguments[0].innerHTML;", webDateDeparture.get(3)));
+		}
+		this.currency = (String) jsExecutor.executeScript(
+				"var x = document.querySelectorAll('div#outbound div div div div label')[0].textContent.length;"
+						+ "return document.querySelectorAll('div#outbound div div div div label')[0].textContent.substr(x-3,x);");
 	}
 
-	public DaoAirTicket getAirTicketList(boolean flyWithReturn, DaoAirTicket daoAirTicketAcum) {
+	public void getAirTicketList(boolean flyWithReturn) {
+		String classFlyDepart = "";
+		String classFlyReturn = "";
+		AirTicket airTicketForward;
+		AirTicket airTicketBack;
+		AirTicketTwoWay airTicketTwoWay;
+		float costTicket = 2;
 		this.actions = new Actions(webDriverPage);
 		long k = 0, m = 0;
-		DaoAirTicket daoAirTicket = new DaoAirTicketImplement();
-		daoAirTicket = daoAirTicketAcum;
 		this.waitSmth = new WebDriverWait(webDriverPage, 60);
-		waitSmth.until(ExpectedConditions
-				.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.container.content div"))));
-		List<WebElement> webDateDeparture = webDriverPage.findElements(By.cssSelector("div.container.content div"));
-		String strTemp = webDateDeparture.get(0).getAttribute("class"); // if "clear", then may read tickets
-		if (strTemp.equals("panel") | (strTemp.equals("clear"))) { 
-			if (strTemp.equals("panel")) {
-				actions.pause(40000).perform(); // captcha
+		waitSmth.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.container.content div")));
+		List<WebElement> idPageOpened = webDriverPage.findElements(By.cssSelector("div.container.content div"));
+		String strIdPageOpened = idPageOpened.get(0).getAttribute("class"); // if "clear", then to read tickets
+		if (strIdPageOpened.equals("panel") | (strIdPageOpened.equals("clear"))) {
+			if (strIdPageOpened.equals("panel")) {
+				actions.pause(30000).perform(); // captcha 30 seg
 			}
-			JavascriptExecutor jsExecutor = (JavascriptExecutor) webDriverPage;
-			String jScript = "";
-			String classFlyDepart = "";
-			String classFlyReturn = "";
-			String currency = "";
-			Calendar dateTickDepart = Calendar.getInstance();
-			Calendar dateTickReturn = Calendar.getInstance();
-			AirTicket airTicketForward;
-			AirTicket airTicketBack;
-			AirTicketTwoWay airTicketTwoWay;
-			float costTicket = 2;
 			actions.pause(1000).perform();
-			webDateDeparture = webDriverPage.findElements(By.cssSelector("div[class='departure'] strong"));
-			jScript = "return arguments[0].innerHTML;";
-			if (!flyWithReturn) {
-				dateTickDepart = getTimeAirTicket((String) jsExecutor.executeScript(jScript, webDateDeparture.get(1)));
-			} else {
-				dateTickDepart = getTimeAirTicket((String) jsExecutor.executeScript(jScript, webDateDeparture.get(1)));
-				dateTickReturn = getTimeAirTicket((String) jsExecutor.executeScript(jScript, webDateDeparture.get(3)));
-			}
-			jScript = "var x = document.querySelectorAll('div#outbound div div div div label')[0].textContent.length;"
-					+ "return document.querySelectorAll('div#outbound div div div div label')[0].textContent.substr(x-3,x);";
-			currency = (String) jsExecutor.executeScript(jScript);
-			jScript = "return document.querySelectorAll('div#outbound div div div div input').length";
-			k = (long) jsExecutor.executeScript(jScript);
+			getDateCurrency(flyWithReturn);
+			k = (long) jsExecutor
+					.executeScript("return document.querySelectorAll('div#outbound div div div div input').length");
 			for (int i = 0; i < k; i++) {
-				jScript = "var i = arguments[0];" + "var cssSelector = 'div#outbound div div div div input';"
-						+ "var l = document.querySelectorAll(cssSelector)[i].id.length;"
-						+ "var str = document.querySelectorAll(cssSelector)[i].id.substr(l-2,l);"
-						+ "switch(str){ case 'EP': var out = 'Economy Promotion'; break;"
-						+ "case 'ER': var out = 'Economy Restricted'; break;"
-						+ "case 'SF': var out = 'Economic Semi-flexible'; break;"
-						+ "case 'EF': var out = 'Economy Flexible'; break;" + "case 'BC': var out = 'Business'; break; "
-						+ "default: var out = 'Business'; break;};"
-						+ "document.querySelectorAll(cssSelector)[i].click();" + "return out;";
-				classFlyDepart = (String) jsExecutor.executeScript(jScript, i);
+				classFlyDepart = clickGetClass("'div#outbound div div div div input'", i);
 				if (!flyWithReturn) {
 					actions.pause(500).perform();
-					jScript = "return document.querySelectorAll('div.total span.amount')[0].textContent;";
-					strTemp = (String) jsExecutor.executeScript(jScript);
-					costTicket = getCostTicket(strTemp);
+					costTicket = getCostTicket(false, "'div.total span.amount'", i);
 					airTicketForward = new AirTicket(dateTickDepart, costTicket, classFlyDepart,
 							AirTicket.wayFlyReference[0], currency);
 					daoAirTicket.addOneWay(airTicketForward);
 				} else {
 					actions.pause(500).perform();
-					jScript = "var x = document.querySelectorAll('div#outbound div div div div label')[arguments[0]].textContent.length;"
-							+ "return document.querySelectorAll('div#outbound div div div div label')[arguments[0]].textContent.substr(0,x-4);";
-					strTemp = (String) jsExecutor.executeScript(jScript, i);
-					costTicket = getCostTicket(strTemp);
+					costTicket = getCostTicket(true, "'div#outbound div div div div label'", i);
 					airTicketForward = new AirTicket(dateTickDepart, costTicket, classFlyDepart,
 							AirTicket.wayFlyReference[0], currency);
-					jScript = "return document.querySelectorAll('div#inbound div div div div input').length";
-					m = (long) jsExecutor.executeScript(jScript);
+					m = (long) jsExecutor.executeScript(
+							"return document.querySelectorAll('div#inbound div div div div input').length");
 					for (int j = 0; j < m; j++) {
-						jScript = "var i = arguments[0];" + "var cssSelector = 'div#inbound div div div div input';"
-								+ "var l = document.querySelectorAll(cssSelector)[i].id.length;"
-								+ "var str = document.querySelectorAll(cssSelector)[i].id.substr(l-2,l);"
-								+ "switch(str){ case 'EP': var out = 'Economy Promotion'; break;"
-								+ "case 'ER': var out = 'Economy Restricted'; break;"
-								+ "case 'SF': var out = 'Economic Semi-flexible'; break;"
-								+ "case 'EF': var out = 'Economy Flexible'; break;"
-								+ "case 'BC': var out = 'Business'; break; " + "default: var out = 'Business'; break;};"
-								+ "document.querySelectorAll(cssSelector)[i].click();" + "return out;";
-						classFlyReturn = (String) jsExecutor.executeScript(jScript, j);
+						classFlyReturn = clickGetClass("'div#inbound div div div div input'", j);
 						actions.pause(500).perform();
-						jScript = "var x = document.querySelectorAll('div#inbound div div div div label')[arguments[0]].textContent.length;"
-								+ "return document.querySelectorAll('div#inbound div div div div label')[arguments[0]].textContent.substr(0,x-4);";
-						strTemp = (String) jsExecutor.executeScript(jScript, j);
-						costTicket = getCostTicket(strTemp);
+						costTicket = getCostTicket(true, "'div#inbound div div div div label'", j);
 						airTicketBack = new AirTicket(dateTickReturn, costTicket, classFlyReturn,
 								AirTicket.wayFlyReference[1], currency);
 						actions.pause(500).perform();
-						jScript = "return document.querySelectorAll('div.total span.amount')[0].textContent;";
-						strTemp = (String) jsExecutor.executeScript(jScript);
-						costTicket = getCostTicket(strTemp);
+						costTicket = getCostTicket(false, "'div.total span.amount'", i);
 						airTicketTwoWay = new AirTicketTwoWay(airTicketForward, airTicketBack, costTicket, currency);
 						daoAirTicket.addTwoWay(airTicketTwoWay);
 					}
@@ -166,7 +159,6 @@ public class ListTicketsPage extends AbstractPage {
 			actions.pause(3000).perform();
 		}
 		webDriverPage.get(SelectionTicketsPage.urlHomeBelavia);
-		return daoAirTicket;
 	}
 
 }

@@ -15,7 +15,7 @@ public class TicketTest extends BaseTest {
 	@DataProvider(name = "OneWayDates")
 	public Iterator<Date> oneWayData() {
 		Date dateToday = new Date();
-		int stepDays = 15;
+		int stepDays = 30;
 		List<Date> listDateDeparture = new ArrayList<Date>();
 		Calendar calendarDeparture = Calendar.getInstance();
 		Calendar finCalendar = Calendar.getInstance();
@@ -40,8 +40,8 @@ public class TicketTest extends BaseTest {
 	public Object[][] TwoWayData() {
 		Date dateToday = new Date();
 		int numMax = 10000;
-		int stepDaysDeparture = 15;
-		int stepDaysReturn = 15;
+		int stepDaysDeparture = 61;
+		int stepDaysReturn = 60;
 		Object[][] arrayDate = new Date[numMax][2];
 		Calendar calendarDeparture = Calendar.getInstance();
 		Calendar calendarReturn = Calendar.getInstance();
