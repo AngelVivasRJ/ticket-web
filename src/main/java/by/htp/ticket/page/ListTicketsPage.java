@@ -2,6 +2,8 @@ package by.htp.ticket.page;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -43,7 +45,21 @@ public class ListTicketsPage extends AbstractPage {
 	}
 
 	private float getCostTicket(String costWebElement) {
-		return Float.parseFloat(costWebElement.replace(',', '.'));
+		String strCost = "";
+		int indexBegin = 0;
+		String regExp = "[^\\w,]";
+		Pattern pattern = Pattern.compile(regExp);
+		Matcher matcher = pattern.matcher(costWebElement);
+		while (matcher.find()) {
+			strCost += costWebElement.substring(indexBegin, matcher.start());
+			indexBegin = matcher.end();
+		}
+		if (indexBegin == 0) {
+			strCost = costWebElement;
+		} else {
+			strCost += costWebElement.substring(indexBegin, costWebElement.length());
+		}
+		return Float.parseFloat(strCost.replace(',', '.'));
 	}
 
 	public String getInnerHTML(WebElement webElement) {
@@ -52,93 +68,104 @@ public class ListTicketsPage extends AbstractPage {
 	}
 
 	public DaoAirTicket getAirTicketList(boolean flyWithReturn, DaoAirTicket daoAirTicketAcum) {
-		long k = 0, l = 0;
 		this.actions = new Actions(webDriverPage);
-		JavascriptExecutor jsExecutor = (JavascriptExecutor) webDriverPage;
-		String jScript = "";
-		String classFly = "";
-		String strTemp = "";
-		Calendar dateTickDepart = Calendar.getInstance();
-		Calendar dateTickReturn = Calendar.getInstance();
-		AirTicket airTicketForward;
-		AirTicket airTicketBack;
-		AirTicketTwoWay airTicketTwoWay;
+		long k = 0, m = 0;
 		DaoAirTicket daoAirTicket = new DaoAirTicketImplement();
 		daoAirTicket = daoAirTicketAcum;
-		List<WebElement> webCostTicket;
-		float costTicket = 2;
-		this.waitSmth = new WebDriverWait(webDriverPage, 10);
-		waitSmth.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("span.amount")));
-		List<WebElement> webDateDeparture = webDriverPage.findElements(By.cssSelector("div[class='departure'] strong"));
-		// 4 (1,3)
-		jScript = "return arguments[0].innerHTML;";
-		actions.pause(1000).perform();
-		if (!flyWithReturn) {
-			dateTickDepart = getTimeAirTicket((String) jsExecutor.executeScript(jScript, webDateDeparture.get(1)));
-		} else {
-			dateTickDepart = getTimeAirTicket((String) jsExecutor.executeScript(jScript, webDateDeparture.get(3)));
-		}
-		webCostTicket = webDriverPage.findElements(By.cssSelector("span.amount"));
-		jScript = "return arguments[0].innerHTML;";
-		strTemp = (String) jsExecutor.executeScript(jScript, webCostTicket.get(5));
-		jScript = "return document.querySelectorAll('div.fare-avail > div input').length";
-		k = (long) jsExecutor.executeScript(jScript);		
-		for (int i = 0; i < k; i++) {
-
-
-				//jScript = "document.querySelectorAll('div.fare-avail > div input')[arguments[0]].click();";
-			jScript = "var i = arguments[0]; var l = document.querySelectorAll('div.fare-avail > div input')[i].id.length;" +
-					"var str = document.querySelectorAll('div.fare-avail > div input')[i].id.substr(l-2,l);" +
-					"switch(str){ case 'EP': var out = 'Economy Promotion'; break; case 'ER': var out = 'Economy Restricted'; break; case 'SF': var out = 'Economic Semi-flexible'; break; case 'EF': var out = 'Economy Flexible'; break; case 'BC': var out = 'Business'; break; default: var out = \"Business\"; break;};" +
-					"document.querySelectorAll('div.fare-avail > div input')[i].click();" + "return out;";	
-			classFly = (String) jsExecutor.executeScript(jScript, i);
-				
-
+		this.waitSmth = new WebDriverWait(webDriverPage, 60);
+		waitSmth.until(ExpectedConditions
+				.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.container.content div"))));
+		List<WebElement> webDateDeparture = webDriverPage.findElements(By.cssSelector("div.container.content div"));
+		String strTemp = webDateDeparture.get(0).getAttribute("class"); // if "clear", then may read tickets
+		if (strTemp.equals("panel") | (strTemp.equals("clear"))) { 
+			if (strTemp.equals("panel")) {
+				actions.pause(40000).perform(); // captcha
+			}
+			JavascriptExecutor jsExecutor = (JavascriptExecutor) webDriverPage;
+			String jScript = "";
+			String classFlyDepart = "";
+			String classFlyReturn = "";
+			String currency = "";
+			Calendar dateTickDepart = Calendar.getInstance();
+			Calendar dateTickReturn = Calendar.getInstance();
+			AirTicket airTicketForward;
+			AirTicket airTicketBack;
+			AirTicketTwoWay airTicketTwoWay;
+			float costTicket = 2;
+			actions.pause(1000).perform();
+			webDateDeparture = webDriverPage.findElements(By.cssSelector("div[class='departure'] strong"));
+			jScript = "return arguments[0].innerHTML;";
+			if (!flyWithReturn) {
+				dateTickDepart = getTimeAirTicket((String) jsExecutor.executeScript(jScript, webDateDeparture.get(1)));
+			} else {
+				dateTickDepart = getTimeAirTicket((String) jsExecutor.executeScript(jScript, webDateDeparture.get(1)));
+				dateTickReturn = getTimeAirTicket((String) jsExecutor.executeScript(jScript, webDateDeparture.get(3)));
+			}
+			jScript = "var x = document.querySelectorAll('div#outbound div div div div label')[0].textContent.length;"
+					+ "return document.querySelectorAll('div#outbound div div div div label')[0].textContent.substr(x-3,x);";
+			currency = (String) jsExecutor.executeScript(jScript);
+			jScript = "return document.querySelectorAll('div#outbound div div div div input').length";
+			k = (long) jsExecutor.executeScript(jScript);
+			for (int i = 0; i < k; i++) {
+				jScript = "var i = arguments[0];" + "var cssSelector = 'div#outbound div div div div input';"
+						+ "var l = document.querySelectorAll(cssSelector)[i].id.length;"
+						+ "var str = document.querySelectorAll(cssSelector)[i].id.substr(l-2,l);"
+						+ "switch(str){ case 'EP': var out = 'Economy Promotion'; break;"
+						+ "case 'ER': var out = 'Economy Restricted'; break;"
+						+ "case 'SF': var out = 'Economic Semi-flexible'; break;"
+						+ "case 'EF': var out = 'Economy Flexible'; break;" + "case 'BC': var out = 'Business'; break; "
+						+ "default: var out = 'Business'; break;};"
+						+ "document.querySelectorAll(cssSelector)[i].click();" + "return out;";
+				classFlyDepart = (String) jsExecutor.executeScript(jScript, i);
 				if (!flyWithReturn) {
 					actions.pause(500).perform();
-					jScript = "return document.querySelectorAll('div.total span.amount')[0].innerHTML;";
+					jScript = "return document.querySelectorAll('div.total span.amount')[0].textContent;";
 					strTemp = (String) jsExecutor.executeScript(jScript);
 					costTicket = getCostTicket(strTemp);
-					airTicketForward = new AirTicket(dateTickDepart, costTicket, AirTicket.classFlyReference[i],
-							AirTicket.wayFlyReference[0]);
+					airTicketForward = new AirTicket(dateTickDepart, costTicket, classFlyDepart,
+							AirTicket.wayFlyReference[0], currency);
 					daoAirTicket.addOneWay(airTicketForward);
-					
 				} else {
 					actions.pause(500).perform();
-					webCostTicket = webDriverPage.findElements(By.cssSelector("span.amount"));
-					
-					jScript = "return document.querySelectorAll('div.fare-avail > div input').length";
-					l = (long) jsExecutor.executeScript(jScript);
-					
-					for (int j = 7; j <= l; j++) {
-						/*if (!(objInterface.get(i + 1).getText().substring(0, 1).equals("-"))) {
-
-							this.waitSmth = new WebDriverWait(webDriverPage, 10);
-							waitSmth.until(ExpectedConditions.elementToBeClickable(objInterface.get(j)));
-							objInterface.get(j).click();
-
-							actions.pause(500);
-							webCostTicket = webDriverPage.findElements(By.cssSelector("span.amount"));
-							this.waitSmth = new WebDriverWait(webDriverPage, 10);
-							waitSmth.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.amount")));
-
-							// costTicket = getCostTicket(webCostTicket.get(5));
-
-							airTicketForward = new AirTicket(dateTickReturn, costTicket, AirTicket.classFlyReference[i],
-									AirTicket.wayFlyReference[0]);
-							airTicketBack = new AirTicket(dateTickDepart, costTicket,
-									AirTicket.classFlyReference[j - 7], AirTicket.wayFlyReference[1]);
-							airTicketTwoWay = new AirTicketTwoWay(airTicketForward, airTicketBack, costTicket);
-							daoAirTicket.addTwoWay(airTicketTwoWay);
-							//objInterface = webDriverPage
-							//		.findElements(By.cssSelector("[class='fare-avail ui-corner-all'] div")); // 12
-																												// (1-5)(7-11)
-						}*/
+					jScript = "var x = document.querySelectorAll('div#outbound div div div div label')[arguments[0]].textContent.length;"
+							+ "return document.querySelectorAll('div#outbound div div div div label')[arguments[0]].textContent.substr(0,x-4);";
+					strTemp = (String) jsExecutor.executeScript(jScript, i);
+					costTicket = getCostTicket(strTemp);
+					airTicketForward = new AirTicket(dateTickDepart, costTicket, classFlyDepart,
+							AirTicket.wayFlyReference[0], currency);
+					jScript = "return document.querySelectorAll('div#inbound div div div div input').length";
+					m = (long) jsExecutor.executeScript(jScript);
+					for (int j = 0; j < m; j++) {
+						jScript = "var i = arguments[0];" + "var cssSelector = 'div#inbound div div div div input';"
+								+ "var l = document.querySelectorAll(cssSelector)[i].id.length;"
+								+ "var str = document.querySelectorAll(cssSelector)[i].id.substr(l-2,l);"
+								+ "switch(str){ case 'EP': var out = 'Economy Promotion'; break;"
+								+ "case 'ER': var out = 'Economy Restricted'; break;"
+								+ "case 'SF': var out = 'Economic Semi-flexible'; break;"
+								+ "case 'EF': var out = 'Economy Flexible'; break;"
+								+ "case 'BC': var out = 'Business'; break; " + "default: var out = 'Business'; break;};"
+								+ "document.querySelectorAll(cssSelector)[i].click();" + "return out;";
+						classFlyReturn = (String) jsExecutor.executeScript(jScript, j);
+						actions.pause(500).perform();
+						jScript = "var x = document.querySelectorAll('div#inbound div div div div label')[arguments[0]].textContent.length;"
+								+ "return document.querySelectorAll('div#inbound div div div div label')[arguments[0]].textContent.substr(0,x-4);";
+						strTemp = (String) jsExecutor.executeScript(jScript, j);
+						costTicket = getCostTicket(strTemp);
+						airTicketBack = new AirTicket(dateTickReturn, costTicket, classFlyReturn,
+								AirTicket.wayFlyReference[1], currency);
+						actions.pause(500).perform();
+						jScript = "return document.querySelectorAll('div.total span.amount')[0].textContent;";
+						strTemp = (String) jsExecutor.executeScript(jScript);
+						costTicket = getCostTicket(strTemp);
+						airTicketTwoWay = new AirTicketTwoWay(airTicketForward, airTicketBack, costTicket, currency);
+						daoAirTicket.addTwoWay(airTicketTwoWay);
 					}
 				}
-			
+			}
+		} else {
+			actions.pause(3000).perform();
 		}
-		webDriverPage.navigate().back();
+		webDriverPage.get(SelectionTicketsPage.urlHomeBelavia);
 		return daoAirTicket;
 	}
 

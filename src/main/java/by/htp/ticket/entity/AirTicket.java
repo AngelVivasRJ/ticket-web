@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 public class AirTicket implements Comparable<AirTicket> {
 	// Encapsulation verification
-	public static final String wayFlyReference[] = { "Minsk(MSQ)-Ryga(RIX)", "Ryga(RIX)-Minsk (MSQ)" };
+	public static final String wayFlyReference[] = { "Minsk(MSQ)-Ryga(RIX)", "Ryga(RIX)-Minsk(MSQ)" };
 	public static final String classFlyReference[] = { "Economy Promotion", "Economy Restricted",
 			"Economic Semi-flexible", "Economy Flexible", "Business" };
 
@@ -13,6 +13,7 @@ public class AirTicket implements Comparable<AirTicket> {
 	private float costFly;
 	private String classFly;
 	private String wayFly;
+	private String currency;
 
 	public AirTicket() {
 		super();
@@ -20,14 +21,16 @@ public class AirTicket implements Comparable<AirTicket> {
 		this.costFly = 0;
 		this.classFly = wayFlyReference[0];
 		this.wayFly = classFlyReference[0];
+		this.currency = "BYN";
 	}
 
-	public AirTicket(Calendar dateTimeFly, float costFly, String classFly, String wayFly) {
+	public AirTicket(Calendar dateTimeFly, float costFly, String classFly, String wayFly, String currency) {
 		super();
 		this.dateTimeFly = dateTimeFly;
 		this.costFly = costFly;
 		this.classFly = classFly;
 		this.wayFly = wayFly;
+		this.currency = currency;
 	}
 
 	public Calendar getDateTimeFly() {
@@ -62,6 +65,14 @@ public class AirTicket implements Comparable<AirTicket> {
 		this.wayFly = wayFly;
 	}
 
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
 	public String toStringCalendar(Calendar calendar) {
 		String stemp = calendar.getTime().toString();
 		return stemp.substring(4, 7) + " " + stemp.substring(8, 10) + " "
@@ -71,7 +82,7 @@ public class AirTicket implements Comparable<AirTicket> {
 
 	@Override
 	public String toString() {
-		return wayFly + " " + toStringCalendar(dateTimeFly) + " " + String.format("%.2f", costFly) + " BYN" + " "
+		return wayFly + " " + toStringCalendar(dateTimeFly) + " " + String.format("%.2f", costFly) + " " + currency + " "
 				+ classFly;
 	}
 

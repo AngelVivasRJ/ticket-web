@@ -44,28 +44,28 @@ public class Step {
 	}
 
 	public void showListOneWay() {
-		System.out.println("Original list of Tickets one way");
+		System.out.println("Original list");
 		console.showListTicket();
 
-		System.out.println("Sorted list of one way tickets by cost");
+		System.out.println("Sorted list by cost");
 		daoAirTicket.sortByCostFly();
 		console.showListTicket();
 
-		System.out.println("Sorted list of one way tickets by date");
+		System.out.println("Sorted list by date");
 		daoAirTicket.sortByDateFly();
 		console.showListTicket();
 	}
 
 	public void showListTwoWay() {
-		System.out.println("Original list of two way tickets");
+		System.out.println("Original list");
 		console.showListTicketTwoWay();
 		
 
-		System.out.println("Sorted list of two way tickets by date");
+		System.out.println("Sorted list by date");
 		daoAirTicket.sortByDateFly();;
 		console.showListTicketTwoWay();
 		
-		System.out.println("Sorted list of two way tickets by cost");
+		System.out.println("Sorted list by cost");
 		daoAirTicket.sortByCostFly();
 		console.showListTicketTwoWay();
 	}

@@ -13,7 +13,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SelectionTicketsPage extends AbstractPage {
 
-	private static final String urlHomeBelavia = "https://belavia.by";
+	public static final String urlHomeBelavia = "https://belavia.by";
 
 	private WebElement webElement;
 	private Actions actions;
@@ -122,10 +122,8 @@ public class SelectionTicketsPage extends AbstractPage {
 			this.webElement = webDriverPage.findElement(By.linkText(Integer.toString(day[n])));
 			webElement.click();
 		}
-		System.out.println("Before search!!!!!!");
 		this.waitSmth = new WebDriverWait(webDriverPage, 10);
 		waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[onclick*='kupitnajtibilet']")));
 		webDriverPage.findElement(By.cssSelector("button[onclick*='kupitnajtibilet']")).submit();
-		System.out.println("Aftersearch!!!!!!!!");
 	}
 }
