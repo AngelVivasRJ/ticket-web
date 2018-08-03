@@ -70,7 +70,7 @@ public class TicketTest extends BaseTest {
 		return arrayToReturn;
 	}
 
-	//@Test(dataProvider = "OneWayDates")
+	@Test(dataProvider = "OneWayDates")
 	public void belaviaOneWayTest(Date dateDeparture) {
 		System.out.println("BelaviaOneWayTest()");
 		step.getTicketDate(false, dateDeparture, dateDeparture);
