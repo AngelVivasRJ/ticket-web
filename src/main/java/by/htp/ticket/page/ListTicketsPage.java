@@ -14,7 +14,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import by.htp.ticket.dao.DaoAirTicket;
-import by.htp.ticket.dao.implement.DaoAirTicketImplement;
 import by.htp.ticket.entity.AirTicket;
 import by.htp.ticket.entity.AirTicketTwoWay;
 
@@ -90,6 +89,19 @@ public class ListTicketsPage extends AbstractPage {
 		return Float.parseFloat(strCost.replace(',', '.'));
 	}
 
+	private void pauseAmount(String strTemp) {
+		String strNow = (String) jsExecutor
+				.executeScript("return document.querySelectorAll('div.total span.amount')[0].textContent");
+		int n = 60;
+		int x = 0;
+		while ((x < n) & (strNow.equals(strTemp))) {
+			actions.pause(50).perform();
+			strNow = (String) jsExecutor
+					.executeScript("return document.querySelectorAll('div.total span.amount')[0].textContent");
+			x++;
+		}
+	}
+
 	private void getDateCurrency(boolean flyWithReturn) {
 		List<WebElement> webDateDeparture = webDriverPage.findElements(By.cssSelector("div[class='departure'] strong"));
 		if (!flyWithReturn) {
@@ -115,7 +127,7 @@ public class ListTicketsPage extends AbstractPage {
 		float costTicket = 2;
 		this.actions = new Actions(webDriverPage);
 		long k = 0, m = 0;
-		this.waitSmth = new WebDriverWait(webDriverPage, 60);
+		this.waitSmth = new WebDriverWait(webDriverPage, 10); // 10 seg
 		waitSmth.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.container.content div")));
 		List<WebElement> idPageOpened = webDriverPage.findElements(By.cssSelector("div.container.content div"));
 		String strIdPageOpened = idPageOpened.get(0).getAttribute("class"); // if "clear", then to read tickets
@@ -123,20 +135,20 @@ public class ListTicketsPage extends AbstractPage {
 			if (strIdPageOpened.equals("panel")) {
 				actions.pause(30000).perform(); // captcha 30 seg
 			}
-			actions.pause(1000).perform();
+			actions.pause(1000).perform(); // 1 seg
 			getDateCurrency(flyWithReturn);
 			k = (long) jsExecutor
 					.executeScript("return document.querySelectorAll('div#outbound div div div div input').length");
 			for (int i = 0; i < k; i++) {
 				classFlyDepart = clickGetClass("'div#outbound div div div div input'", i);
 				if (!flyWithReturn) {
-					actions.pause(500).perform();
+					pauseAmount((String) jsExecutor.executeScript(
+							"return document.querySelectorAll('div.total span.amount')[0].textContent"));
 					costTicket = getCostTicket(false, "'div.total span.amount'", i);
 					airTicketForward = new AirTicket(dateTickDepart, costTicket, classFlyDepart,
 							AirTicket.wayFlyReference[0], currency);
 					daoAirTicket.addOneWay(airTicketForward);
 				} else {
-					actions.pause(500).perform();
 					costTicket = getCostTicket(true, "'div#outbound div div div div label'", i);
 					airTicketForward = new AirTicket(dateTickDepart, costTicket, classFlyDepart,
 							AirTicket.wayFlyReference[0], currency);
@@ -144,11 +156,11 @@ public class ListTicketsPage extends AbstractPage {
 							"return document.querySelectorAll('div#inbound div div div div input').length");
 					for (int j = 0; j < m; j++) {
 						classFlyReturn = clickGetClass("'div#inbound div div div div input'", j);
-						actions.pause(500).perform();
 						costTicket = getCostTicket(true, "'div#inbound div div div div label'", j);
 						airTicketBack = new AirTicket(dateTickReturn, costTicket, classFlyReturn,
 								AirTicket.wayFlyReference[1], currency);
-						actions.pause(500).perform();
+						pauseAmount((String) jsExecutor.executeScript(
+								"return document.querySelectorAll('div.total span.amount')[0].textContent"));
 						costTicket = getCostTicket(false, "'div.total span.amount'", i);
 						airTicketTwoWay = new AirTicketTwoWay(airTicketForward, airTicketBack, costTicket, currency);
 						daoAirTicket.addTwoWay(airTicketTwoWay);
@@ -156,7 +168,7 @@ public class ListTicketsPage extends AbstractPage {
 				}
 			}
 		} else {
-			actions.pause(3000).perform();
+			actions.pause(3000).perform(); // 3 seg, there are not tickets for this date.
 		}
 		webDriverPage.get(SelectionTicketsPage.urlHomeBelavia);
 	}

@@ -33,7 +33,6 @@ public class SelectionTicketsPage extends AbstractPage {
 		this.waitSmth = new WebDriverWait(webDriverPage, 10);
 		this.waitSmth.until(ExpectedConditions.elementToBeClickable(By.cssSelector(locatorElement)));		
 		this.webElement = webDriverPage.findElement(By.cssSelector(locatorElement));
-		actions.pause(1000).perform();
 		webElement.sendKeys(city); //Sendkey !!!!!
 		actions.pause(500).perform();
 		actions.moveToElement(webElement, 170, 50).click().perform();

@@ -76,18 +76,18 @@ public class TicketTest extends BaseTest {
 		step.getTicketDate(false, dateDeparture, dateDeparture);
 	}
 
-	@Test(dataProvider = "TwoWayDates")
+	@Test(dataProvider = "TwoWayDates", dependsOnMethods = "belaviaOneWayTest")
 	public void belaviaTwoWayTest(Date dateDeparture, Date dateReturn) {
 		System.out.println("BelaviaTwoWayTest()");
 		step.getTicketDate(true,dateDeparture, dateReturn);
 	}
 
-	@Test
+	@Test(dependsOnMethods = "belaviaOneWayTest")
 	public void listOneWay() {
 		step.showListOneWay();
 	}
 	
-	@Test
+	@Test(dependsOnMethods = "belaviaTwoWayTest")
 	public void listTwoWay() {
 		step.showListTwoWay();
 	}
